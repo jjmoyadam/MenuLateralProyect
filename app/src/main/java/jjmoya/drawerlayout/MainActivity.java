@@ -1,14 +1,16 @@
 package jjmoya.drawerlayout;
-
+import android.support.v4.app.FragmentManager;
+//import android.app.FragmentManager;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,22 +18,52 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private DrawerLayout drawerLayout;
 
+    //para el menu con elementos personalizados
+    private String[] tagTitles;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //referenciar los elementos Drawer y listview haciendo un cast
-        //listo
-         listView= (ListView) findViewById(R.id.listviewejemplo);
         drawerLayout= (DrawerLayout) findViewById(R.id.drawer_layoutejemplo);
+
+        //obtenemos el listview
+        listView = (ListView) findViewById(R.id.listviewejemplo);
+
 
         //inicio de la actividad
         Toast tostada= Toast.makeText(getApplicationContext(),"Inicio de la actividad",Toast.LENGTH_SHORT);
         tostada.show();
 
+        //POBLAMOS EL LISTVIEW EN EL NAVIGATION DRAWER
 
-        //creacion de un menu lateral con elementos de un array se puede personalizar con otros elementos
+        //obtenemos el arreglo de strings desde los recursos en el xml strings.xml
+        tagTitles=getResources().getStringArray(R.array.Tags);
+
+
+        //creacion de la lista de drawer items
+        ArrayList<DrawerItem> items= new ArrayList<DrawerItem>();
+
+        //cargamos el array con los string del array del xml y elementos icono del menu
+        items.add(new DrawerItem(tagTitles[0],R.drawable.pimiento));
+        items.add(new DrawerItem(tagTitles[2],R.drawable.pimiento));
+        items.add(new DrawerItem(tagTitles[3],R.drawable.pimiento));
+        items.add(new DrawerItem(tagTitles[4],R.drawable.pimiento));
+
+        //Relacionamos el adaptador y la escucha de la lista del drawer
+        listView.setAdapter(new DrawerListAdapter(this,items));
+
+
+        //seteamos una instancia de esta escucha del navigation drawer
+        listView.setOnItemClickListener(new DrawerItemClickListener());
+
+
+        //presonalizar menu lateral
+
+
+        /*//creacion de un menu lateral con elementos de un array se puede personalizar con otros elementos
          final String[]opciones= {"Opcion1","Opcion2","Opcion3","Opcion4"};
         //adaptador que mendiante un arrayadapter le pasamos 2 layout de lista simple y de texto , le pasamos un array de opciones
         listView.setAdapter(new ArrayAdapter(this,android.R.layout.simple_list_item_1,android.R.id.text1,opciones));
@@ -49,12 +81,48 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers();
 
             }
-        });
-        //implementacion de los eventos de abrir y cerrar del menu lateral
-
+        });*/
 
     }
-    //mostramos y ocultamos el menu lateral
+
+    /**
+     * clase que esta a la escucha del Drawer Inte, llama al select item que carga el nuevo fragment
+     */
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    private void selectItem(int position) {
+
+        // Reemplazar el contenido del layout principal por un fragmento creado
+        Articlefragment fragment = new Articlefragment();
+        //bundle par apasar los argunemos
+        Bundle args = new Bundle();
+        //pasamos la posicion seleccionaba en el menu a la clase de fragment para crearlo
+        args.putInt(Articlefragment.ARG_ARTICLES_NUMBER, position);
+
+        //cambiamos los argumentos
+        fragment.setArguments(args);
+
+        //creacion  fragment manager para manejar los datos
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        //fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        // Se actualiza el item seleccionado y el título, después de cerrar el drawer
+        listView.setItemChecked(position, true);
+        setTitle(tagTitles[position]);
+        drawerLayout.closeDrawer(listView);
+    }
+
+
+    /**
+     * Abre y cierra el menu lateral si pulsamos el boton de home de nuestro android
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //recogemos el item del menu
