@@ -20,4 +20,6 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/cabecera"
         android:src="@drawable/botellas" />
+
+
 </RelativeLayout>

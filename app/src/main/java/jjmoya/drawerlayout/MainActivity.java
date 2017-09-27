@@ -15,12 +15,19 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     //elementos del menu
+
+
+    //modifico esto
+
+
     private ListView listView;
     private DrawerLayout drawerLayout;
 
     //para el menu con elementos personalizados
     private String[] tagTitles;
 
+
+    //otra cosa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,33 +62,12 @@ public class MainActivity extends AppCompatActivity {
         //Relacionamos el adaptador y la escucha de la lista del drawer
         listView.setAdapter(new DrawerListAdapter(this,items));
 
-
         //seteamos una instancia de esta escucha del navigation drawer
         listView.setOnItemClickListener(new DrawerItemClickListener());
 
-
-        //presonalizar menu lateral
-
-
-        /*//creacion de un menu lateral con elementos de un array se puede personalizar con otros elementos
-         final String[]opciones= {"Opcion1","Opcion2","Opcion3","Opcion4"};
-        //adaptador que mendiante un arrayadapter le pasamos 2 layout de lista simple y de texto , le pasamos un array de opciones
-        listView.setAdapter(new ArrayAdapter(this,android.R.layout.simple_list_item_1,android.R.id.text1,opciones));
-
-
-        //funcionalidad de los elementos
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                Toast.makeText(MainActivity.this, "Valor : " + opciones[arg2],
-                        Toast.LENGTH_SHORT).show();
-
-                //cierrra el menu
-                drawerLayout.closeDrawers();
-
-            }
-        });*/
+        // Habilitar el icono de la app por si hay algún estilo que lo deshabilitó y
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
     }
 
@@ -107,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
         //cambiamos los argumentos
         fragment.setArguments(args);
 
-        //creacion  fragment manager para manejar los datos
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        //fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        //creacion  fragment manager para manejar los datos OJO con el error de fragment
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         // Se actualiza el item seleccionado y el título, después de cerrar el drawer
         listView.setItemChecked(position, true);

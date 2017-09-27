@@ -45,7 +45,6 @@ public class Articlefragment extends Fragment {
         //lo cargamos con el string de articulo
         headline.append(" "+article);
 
-
         return rootview;
     }
 }
